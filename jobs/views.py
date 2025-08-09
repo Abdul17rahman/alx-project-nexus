@@ -1,15 +1,11 @@
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from .serializers import JobSerializer
 from .models import Job
+from rest_framework import viewsets
 
 
-@api_view(['GET'])
-def job_list(request):
+class JobViewSet(viewsets.ModelViewSet):
     """
-    List all jobs or create a new job.
+    A viewset for viewing and editing job instances.
     """
-    jobs = Job.objects.all()
-
-    serializer = JobSerializer(jobs, many=True)
-    return Response(serializer.data)
+    queryset = Job.objects.all()
+    serializer_class = JobSerializer
