@@ -15,10 +15,13 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        if user.is_staff or user.is_superuser:
+        if user.is_superuser:
             return Application.objects.all()
 
-        return Application.objects.filter(job__owner=user)
+        return Application.objects.filter(applicant=user)
 
     def perform_create(self, serializer):
         serializer.save(applicant=self.request.user)
+
+    def get_serializer_context(self):
+        return {'request': self.request}

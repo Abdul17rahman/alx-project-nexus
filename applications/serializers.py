@@ -8,10 +8,16 @@ class ApplicationSerializer(serializers.ModelSerializer):
     job = serializers.PrimaryKeyRelatedField(
         queryset=Application._meta.get_field('job').related_model.objects.all())
 
+    job_title = serializers.CharField(source='job.title', read_only=True)
+    description = serializers.CharField(
+        source='job.description', read_only=True)
+    job_salary = serializers.CharField(
+        source='job.salary_range', read_only=True)
+
     class Meta:
         model = Application
         fields = [
-            'applicant', 'job', 'resume',
+            'applicant', 'job', 'job_title', 'description', 'job_salary', 'resume',
             'cover_letter', 'status', 'applied_at'
         ]
         read_only_fields = ['id', 'applicant', 'applied_at', 'status']
@@ -37,5 +43,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        validated_data.pop('applicant', None)
         user = self.context['request'].user
         return Application.objects.create(applicant=user, **validated_data)
