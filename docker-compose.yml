@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  web:
+    build: .
+    image: ${DOCKER_IMAGE:-your-dockerhub-username/jobboard_api}:latest
+    restart: unless-stopped
+    ports:
+      - "${HOST_PORT:-8000}:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=jobboard_backend.settings
+      - SQLITE_PATH=/data/db.sqlite3
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-False}
+      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
+      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
+      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+    volumes:
+      - ./media:/app/media
+      - ./data/db.sqlite3:/data/db.sqlite3
